@@ -112,6 +112,7 @@ class BaseNestedModelSerializer(serializers.ModelSerializer):
         return None
 
     def _extract_related_pks(self, field, related_data):
+        """提取关联数据的pk"""
         model_class = field.Meta.model
         pk_list = []
         for d in filter(None, related_data):
@@ -122,6 +123,7 @@ class BaseNestedModelSerializer(serializers.ModelSerializer):
         return pk_list
 
     def _prefetch_related_instances(self, field, related_data):
+        """预先载入关联的实例"""
         model_class = field.Meta.model
         pk_list = self._extract_related_pks(field, related_data)
 
@@ -184,6 +186,7 @@ class BaseNestedModelSerializer(serializers.ModelSerializer):
                 )
                 try:
                     serializer.is_valid(raise_exception=True)
+                    # 保存关联的数据
                     related_instance = serializer.save(**save_kwargs)
                     data['pk'] = related_instance.pk
                     new_related_instances.append(related_instance)
